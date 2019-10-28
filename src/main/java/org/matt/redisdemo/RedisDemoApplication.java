@@ -1,14 +1,21 @@
 package org.matt.redisdemo;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 @SpringBootApplication
 public class RedisDemoApplication {
@@ -47,4 +54,27 @@ public class RedisDemoApplication {
 		return new StringRedisTemplate(connectionFactory);
 	}
 
+	public static JedisPool getPool() {
+		URI redisURI = null;
+		try {
+			redisURI = new URI(System.getenv("REDIS_URL"));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		poolConfig.setMaxTotal(10);
+		poolConfig.setMaxIdle(5);
+		poolConfig.setMinIdle(1);
+		poolConfig.setTestOnBorrow(true);
+		poolConfig.setTestOnReturn(true);
+		poolConfig.setTestWhileIdle(true);
+		JedisPool pool = new JedisPool(poolConfig, redisURI);
+		return pool;
+	}
+	
+	@Bean
+    public RedisConnectionFactory jedisConnectionFactory(){
+       return new JedisConnectionFactory();
+    }
 }
