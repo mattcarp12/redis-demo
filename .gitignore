@@ -1,7 +1,8 @@
 HELP.md
 .gradle
 build/
-bin
+/bin/
+/.externalToolBuilders
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
