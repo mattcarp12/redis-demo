@@ -17,7 +17,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @SpringBootApplication
 public class RedisDemoApplication {
-	
+
 	@Value("${spring.redis.url}")
 	URI redisURI;
 
@@ -55,15 +55,14 @@ public class RedisDemoApplication {
 		return new StringRedisTemplate(connectionFactory);
 	}
 
-	
 	@Bean
-    public RedisConnectionFactory jedisConnectionFactory(){
+	public RedisConnectionFactory jedisConnectionFactory() {
 		RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
 		config.setHostName(redisURI.getHost());
 		config.setPort(redisURI.getPort());
-		if (!redisURI.getHost().equals("localhost")) config.setPassword(redisURI.getUserInfo().substring(2));
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(config);
-        return jedisConnectionFactory;
-    }
+		if (!redisURI.getHost().equals("localhost"))
+			config.setPassword(redisURI.getUserInfo().substring(2));
+		return new JedisConnectionFactory(config);
+	}
 
 }
