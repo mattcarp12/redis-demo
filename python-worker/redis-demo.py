@@ -1,6 +1,8 @@
-from multiprocessing.process import Process
+#from multiprocessing.process import Process
 import time
 import redis
+import threading
+from threading import Thread
 
 def pub(myredis):
     for n in range(10000):
@@ -17,6 +19,7 @@ def sub(myredis, name):
 
 if __name__ == '__main__':
     myredis = redis.Redis()
-    Process(target=pub, args=(myredis,)).start()
-    Process(target=sub, args=(myredis, 'reader1')).start()
-    
+    #Process(target=pub, args=(myredis,)).start()
+    #Process(target=sub, args=(myredis, 'reader1')).start()
+    Thread(target=pub, args=(myredis,)).start()
+    Thread(target=sub, args=(myredis,'reader1')).start()
